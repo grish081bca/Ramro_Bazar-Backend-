@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class ProductDTO {
 
     private Integer productId;
-    private String name;
+    private String name;    
     private String description;
     private BigDecimal price;
     private String brand;
