@@ -27,7 +27,7 @@ public class ProductController {
         return service.getAllProducts();
     }
 
-    @PostMapping("products")
+    @PostMapping("add-product")
     public ResponseDTO addProduct(@RequestBody ProductDTO productDTO) {
         return service.addProduct(productDTO);
     }
@@ -37,8 +37,14 @@ public class ProductController {
         return service.getProductById(id);
     }
 
-    @DeleteMapping("/products/{id}")
+    @PostMapping("/delete/products/{id}")
     public ResponseDTO deleteProduct(@PathVariable Integer id) {
         return service.deleteProduct(id);
+    }
+
+    @PutMapping("/update/product")
+    public ResponseEntity<ResponseDTO> editProduct(@RequestParam Integer id, @RequestBody ProductDTO productDto){
+        ResponseDTO response = service.updateProduct(productDto, id);
+        return ResponseEntity.ok(response);
     }
 }
