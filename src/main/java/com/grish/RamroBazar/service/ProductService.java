@@ -87,4 +87,30 @@ public class ProductService {
 
         return new ResponseDTO("M0000", "M0000", "Product added successfully", details);
     }
+
+
+    public ResponseDTO updateProduct(ProductDTO prod, Integer id) {
+        Product product = repo.findById(id).orElse(null);
+
+        if (product != null) {
+            product.setName(prod.getName());
+            product.setPrice(prod.getPrice());
+            product.setDescription(prod.getDescription());
+            product.setCategory(prod.getCategory());
+            product.setQuantity(prod.getQuantity());
+            product.setAvailable(prod.getAvailable());
+            product.setReleaseDate(prod.getReleaseDate());
+            product.setBrand(prod.getBrand());
+
+            repo.save(product);
+
+            Map<String, Object> details = new HashMap<>();
+            details.put("product", ConvertUtil.convertProductDTO(product));
+
+            return new ResponseDTO("M0000", "M0000", "Product updated successfully", details);
+        } else {
+            return new ResponseDTO("M0001", "M0001", "Product not found", null);
+        }
+    }
+
 }
