@@ -46,7 +46,7 @@ public class ProductService {
         prod.setProductId(repo.save(product).getProductId());
 
         Map<String, Object> details = new HashMap<>();
-        details.put("product", prod);
+        details.put("products", prod);
 
         return new ResponseDTO("M0000", "M0000", "Product added successfully", details);
     }
@@ -55,7 +55,7 @@ public class ProductService {
         Product product = repo.findById(productId).orElse(null);
         if (product != null) {
             Map<String, Object> details = new HashMap<>();
-            details.put("product", ConvertUtil.convertProductDTO(product));
+            details.put("products", ConvertUtil.convertProductDTO(product));
 
             return new ResponseDTO("M0000", "M0000", "Success", details);
         } else {
@@ -77,40 +77,27 @@ public class ProductService {
         }
     }
 
-    public ResponseDTO addProductByClient(ProductDTO prod, MultipartFile image) throws IOException {
-        Product product = new Product();
+    public ResponseDTO updateProduct(ProductDTO prod) {
+        Product product = repo.findById(prod.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        repo.save(product);
+        product.setName(prod.getName());
+        product.setPrice(prod.getPrice());
+        product.setDescription(prod.getDescription());
+        product.setCategory(prod.getCategory());
+        product.setQuantity(prod.getQuantity());
+        product.setAvailable(prod.getAvailable());
+        product.setReleaseDate(prod.getReleaseDate());
+        product.setBrand(prod.getBrand());
 
-        Map<String, Object> details = new HashMap<>();
-        details.put("product", ConvertUtil.convertProductDTO(product));
-
-        return new ResponseDTO("M0000", "M0000", "Product added successfully", details);
-    }
-
-
-    public ResponseDTO updateProduct(ProductDTO prod, Integer id) {
-        Product product = repo.findById(id).orElse(null);
-
-        if (product != null) {
-            product.setName(prod.getName());
-            product.setPrice(prod.getPrice());
-            product.setDescription(prod.getDescription());
-            product.setCategory(prod.getCategory());
-            product.setQuantity(prod.getQuantity());
-            product.setAvailable(prod.getAvailable());
-            product.setReleaseDate(prod.getReleaseDate());
-            product.setBrand(prod.getBrand());
-
+        try {
             repo.save(product);
-
             Map<String, Object> details = new HashMap<>();
             details.put("product", ConvertUtil.convertProductDTO(product));
 
-            return new ResponseDTO("M0000", "M0000", "Product updated successfully", details);
-        } else {
-            return new ResponseDTO("M0001", "M0001", "Product not found", null);
+            return new ResponseDTO("M0000", "SUCCESS", "Product updated successfully", details);
+        } catch (Exception e) {
+            return new ResponseDTO("M0002", "ERROR", "Failed to update product", null);
         }
     }
-
 }

@@ -42,9 +42,9 @@ public class ProductController {
         return service.deleteProduct(id);
     }
 
-    @PutMapping("/update/product")
-    public ResponseEntity<ResponseDTO> editProduct(@RequestParam Integer id, @RequestBody ProductDTO productDto){
-        ResponseDTO response = service.updateProduct(productDto, id);
+    @PostMapping("/update/product")
+    public ResponseEntity<ResponseDTO> editProduct(@RequestBody ProductDTO productDto){
+        ResponseDTO response = service.updateProduct(productDto);
         return ResponseEntity.ok(response);
     }
 }
