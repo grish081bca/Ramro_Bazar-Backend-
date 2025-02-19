@@ -1,5 +1,7 @@
 package com.grish.RamroBazar.model;
 
+import org.springframework.validation.ObjectError;
+
 import java.util.Map;
 
 public class ResponseDTO {
@@ -7,12 +9,14 @@ public class ResponseDTO {
     private String code;
     private String message;
     private Map<String,Object> details;
+    private Map<String,Object> detail;
 
     public ResponseDTO(String status, String code, String message, Map<String,Object> details) {
         this.status = status;
         this.code = code;
         this.message = message;
         this.details = details;
+        this.detail = detail;
     }
 
     public String getStatus() {
@@ -45,5 +49,13 @@ public class ResponseDTO {
 
     public void setDetails(Map<String, Object> details) {
         this.details = details;
+    }
+
+    public Map<String,Object> getDetail(){
+        return detail;
+    }
+
+    public void setDetail(Map<String, Object> detail){
+        this.detail = detail;
     }
 }
