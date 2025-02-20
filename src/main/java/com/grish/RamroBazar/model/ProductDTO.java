@@ -1,6 +1,7 @@
 package com.grish.RamroBazar.model;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +18,9 @@ public class ProductDTO {
     private LocalDate releaseDate;
     private Boolean available;
     private Integer quantity;
-
+    private String imageType;
+    private String imageName;
+    private byte[] imageData;
 
     // Getter and Setter for productId
     public Integer getProductId() {
@@ -100,5 +103,27 @@ public class ProductDTO {
         this.quantity = quantity;
     }
 
+    public String getImageName(){
+        return imageName;
+    }
 
+    public void setImageName(String imageName){
+        this.imageName = imageName;
+    }
+
+    public String getImageType(){
+        return imageType;
+    }
+
+    public void setImageType(String imageType){
+        this.imageType = imageType;
+    }
+
+    public byte[] getImageData(){
+        return  imageData;
+    }
+
+    public void setImageData(byte[] imageData){
+        this.imageData = imageData;
+    }
 }

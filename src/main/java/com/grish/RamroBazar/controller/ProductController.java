@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,8 +30,8 @@ public class ProductController {
     }
 
     @PostMapping("add-product")
-    public ResponseDTO addProduct(@RequestBody ProductDTO productDTO) {
-        return service.addProduct(productDTO);
+    public ResponseDTO addProduct(@RequestPart ProductDTO productDTO, @RequestPart MultipartFile imageFile) throws IOException {
+        return service.addProduct(productDTO,imageFile);
     }
 
     @GetMapping("/products/{id}")
@@ -43,8 +45,8 @@ public class ProductController {
     }
 
     @PostMapping("/update/product")
-    public ResponseEntity<ResponseDTO> editProduct(@RequestBody ProductDTO productDto){
-        ResponseDTO response = service.updateProduct(productDto);
+    public ResponseEntity<ResponseDTO> editProduct(@RequestPart ProductDTO productDto, @RequestPart MultipartFile imageFile) throws IOException {
+        ResponseDTO response = service.updateProduct(productDto, imageFile);
         return ResponseEntity.ok(response);
     }
 }
