@@ -18,9 +18,6 @@
             productDTO.setAvailable(product.getAvailable());
             productDTO.setReleaseDate(product.getReleaseDate());
             productDTO.setBrand(product.getBrand());
-            productDTO.setImageData(product.getImageData());
-            productDTO.setImageName(product.getImageName());
-            productDTO.setImageType(product.getImageType());
             return productDTO;
         }
     }

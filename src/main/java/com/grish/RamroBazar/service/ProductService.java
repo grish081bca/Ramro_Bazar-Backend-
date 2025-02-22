@@ -33,7 +33,7 @@ public class ProductService {
         return new ResponseDTO("M0000", "M0000", "Success", details);
     }
 
-    public ResponseDTO addProduct(ProductDTO prod, MultipartFile imageFile) throws IOException {
+    public ResponseDTO addProduct(ProductDTO prod){
         Product product = new Product();
         product.setName(prod.getName());
         product.setPrice(prod.getPrice());
@@ -43,11 +43,6 @@ public class ProductService {
         product.setAvailable(prod.getAvailable());
         product.setReleaseDate(prod.getReleaseDate());
         product.setBrand(prod.getBrand());
-        if (imageFile != null && !imageFile.isEmpty()) {
-            product.setImageName(imageFile.getOriginalFilename());
-            product.setImageType(imageFile.getContentType());
-            product.setImageData(imageFile.getBytes());
-        }
         prod.setProductId(repo.save(product).getProductId());
 
         Map<String, Object> details = new HashMap<>();
@@ -83,7 +78,7 @@ public class ProductService {
         }
     }
 
-    public ResponseDTO updateProduct(ProductDTO prod, MultipartFile imageFile) throws IOException {
+    public ResponseDTO updateProduct(ProductDTO prod) {
         Product product = repo.findById(prod.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
@@ -95,12 +90,6 @@ public class ProductService {
         product.setAvailable(prod.getAvailable());
         product.setReleaseDate(prod.getReleaseDate());
         product.setBrand(prod.getBrand());
-        if (imageFile != null && !imageFile.isEmpty()) {
-            product.setImageName(imageFile.getOriginalFilename());
-            product.setImageType(imageFile.getContentType());
-            product.setImageData(imageFile.getBytes());
-        }
-
         try {
             repo.save(product);
             Map<String, Object> details = new HashMap<>();

@@ -30,8 +30,8 @@ public class ProductController {
     }
 
     @PostMapping("add-product")
-    public ResponseDTO addProduct(@RequestPart ProductDTO productDTO, @RequestPart MultipartFile imageFile) throws IOException {
-        return service.addProduct(productDTO,imageFile);
+    public ResponseDTO addProduct(@RequestBody ProductDTO productDTO) {
+        return service.addProduct(productDTO);
     }
 
     @GetMapping("/products/{id}")
@@ -45,8 +45,8 @@ public class ProductController {
     }
 
     @PostMapping("/update/product")
-    public ResponseEntity<ResponseDTO> editProduct(@RequestPart ProductDTO productDto, @RequestPart MultipartFile imageFile) throws IOException {
-        ResponseDTO response = service.updateProduct(productDto, imageFile);
+    public ResponseEntity<ResponseDTO> editProduct(@RequestBody ProductDTO productDto) {
+        ResponseDTO response = service.updateProduct(productDto);
         return ResponseEntity.ok(response);
     }
 }
