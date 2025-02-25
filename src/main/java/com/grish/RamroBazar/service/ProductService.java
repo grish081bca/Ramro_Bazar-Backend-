@@ -33,7 +33,7 @@ public class ProductService {
         return new ResponseDTO("M0000", "M0000", "Success", details);
     }
 
-    public ResponseDTO addProduct(ProductDTO prod){
+    public ResponseDTO addProduct(ProductDTO prod, MultipartFile imageFile) throws IOException {
         Product product = new Product();
         product.setName(prod.getName());
         product.setPrice(prod.getPrice());
@@ -43,6 +43,9 @@ public class ProductService {
         product.setAvailable(prod.getAvailable());
         product.setReleaseDate(prod.getReleaseDate());
         product.setBrand(prod.getBrand());
+        product.setImageName(imageFile.getOriginalFilename());
+        product.setImageType(imageFile.getContentType());
+        product.setImageDate(imageFile.getBytes());
         prod.setProductId(repo.save(product).getProductId());
 
         Map<String, Object> details = new HashMap<>();
@@ -51,7 +54,7 @@ public class ProductService {
         return new ResponseDTO("M0000", "M0000", "Product added successfully", details);
     }
 
-    public ResponseDTO getProductById(Integer productId) {
+    public ResponseDTO  getProductById(Integer productId) {
         Product product = repo.findById(productId).orElse(null);
         if (product != null) {
             ProductDTO productDTO = ConvertUtil.convertProductDTO(product);
@@ -78,7 +81,7 @@ public class ProductService {
         }
     }
 
-    public ResponseDTO updateProduct(ProductDTO prod) {
+    public ResponseDTO updateProduct(ProductDTO prod , MultipartFile imageFile) throws IOException {
         Product product = repo.findById(prod.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
@@ -90,6 +93,9 @@ public class ProductService {
         product.setAvailable(prod.getAvailable());
         product.setReleaseDate(prod.getReleaseDate());
         product.setBrand(prod.getBrand());
+        product.setImageName(imageFile.getOriginalFilename());
+        product.setImageType(imageFile.getContentType());
+        product.setImageDate(imageFile.getBytes());
         try {
             repo.save(product);
             Map<String, Object> details = new HashMap<>();
@@ -99,5 +105,9 @@ public class ProductService {
         } catch (Exception e) {
             return new ResponseDTO("M0002", "ERROR", "Failed to update product", null);
         }
+    }
+
+    public Product findProductById(Integer id) {
+        return repo.findById(id).orElse(null);
     }
 }

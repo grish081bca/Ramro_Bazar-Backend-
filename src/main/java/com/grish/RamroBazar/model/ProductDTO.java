@@ -18,6 +18,9 @@ public class ProductDTO {
     private LocalDate releaseDate;
     private Boolean available;
     private Integer quantity;
+    private String imageType;
+    private String imageName;
+    private byte[] imageDate;
 
     // Getter and Setter for productId
     public Integer getProductId() {
@@ -98,5 +101,29 @@ public class ProductDTO {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public byte[] getImageDate() {
+        return imageDate;
+    }
+
+    public void setImageDate(byte[] imageDate) {
+        this.imageDate = imageDate;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 }
