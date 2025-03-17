@@ -4,10 +4,12 @@ import com.grish.RamroBazar.model.Product;
 import com.grish.RamroBazar.model.ProductDTO;
 import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,16 +25,21 @@ public class ProductController {
     ProductService service;
 
     @GetMapping("/")
-    public String greet(){
-        return "Hello World";
+    public String greet(HttpServletRequest request) {
+        return "Hello World" + request.getSession().getId();
     }
 
-    @GetMapping("products")
+    @GetMapping("/csrf-token")
+    public CsrfToken getCsrfToken(HttpServletRequest request) {
+        return (CsrfToken) request.getAttribute("_csrf");
+    }
+
+    @GetMapping("/products")
     public ResponseDTO getAllProducts() {
         return service.getAllProducts();
     }
 
-    @PostMapping(value = "add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseDTO addProduct(
             @RequestPart("productDTO") ProductDTO productDTO,  // Match form field name
             @RequestPart("imageFile") MultipartFile imageFile
