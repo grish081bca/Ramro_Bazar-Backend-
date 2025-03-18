@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,7 +28,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         //This method is knows as builder pattern in which you can use one object to call multiple methods
         http.csrf(customizer -> customizer.disable())//disable csrf
-        .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())//enable authorization for every request
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN") // Protect /api endpoints for ADMIN only
+                        .anyRequest().authenticated() // Require authentication for all other endpoints
+                )
+//        .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())//enable authorization for every request
         .httpBasic(Customizer.withDefaults())//enable basic authentication
         .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));//create new session in every request
                // .build(); //You Can Direclty return http object but it is not recommended
@@ -40,7 +45,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        authProvider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         authProvider.setUserDetailsService(userDetailsService);
         return authProvider;
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @CrossOrigin
@@ -39,6 +41,7 @@ public class ProductController {
         return service.getAllProducts();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')") // Only Admins can access this
     @PostMapping(value = "/add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseDTO addProduct(
             @RequestPart("productDTO") ProductDTO productDTO,  // Match form field name
