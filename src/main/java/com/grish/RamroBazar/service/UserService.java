@@ -100,7 +100,7 @@ public class UserService {
            var getToken = jwtService.generateToken(user.getUserName());
             Map<String,Object> detail = new HashMap<>();
             detail.put("token", getToken);
-            return  new ResponseDTO("M0000", "M0000", "User verified successfully", detail) ;
+            return  new ResponseDTO("M0000", "M0000", "Login SuccessFully", detail) ;
         }else {
             Map<String,Object> message = new HashMap<>();
             message.put("error", "Login Failed");
