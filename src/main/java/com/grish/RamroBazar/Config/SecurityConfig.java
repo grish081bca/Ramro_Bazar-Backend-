@@ -29,15 +29,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         //This method is knows as builder pattern in which you can use one object to call multiple methods
-        http.csrf(customizer -> customizer.disable())//disable csrf
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN") // Protect /api endpoints for ADMIN only
-                        .anyRequest().authenticated() // Require authentication for all other endpoints
-                )
-//        .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())//enable authorization for every request
+        http.csrf(customizer -> customizer.disable())
+        .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .requestMatchers("api/login")
+                .permitAll()
+                .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())//enable basic authentication
         .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));//create new session in every request
-               // .build(); //You Can Direclty return http object but it is not recommended
 
         //http.formLogin(Customizer.withDefaults());//enable default login page
 

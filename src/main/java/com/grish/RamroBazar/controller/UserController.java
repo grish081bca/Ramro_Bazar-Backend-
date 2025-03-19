@@ -3,7 +3,9 @@ package com.grish.RamroBazar.controller;
 import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.model.Users;
 import com.grish.RamroBazar.service.RBUserDetailService;
+import com.grish.RamroBazar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class UserController {
     @Autowired
-    RBUserDetailService userService;
+    UserService userService;
+
+    @PostMapping("/login")
+    public ResponseDTO login(@RequestBody Users user) {
+        return userService.verifyUser(user);
+    }
 
     @GetMapping("/users")
     public ResponseDTO getAllUsers() {
