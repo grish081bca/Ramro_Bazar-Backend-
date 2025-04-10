@@ -23,17 +23,17 @@ import java.util.prefs.BackingStoreException;
 
 @Service
 public class JWTService {
-    private String secretKey;
+    private String secretKey = "h9RjHV4rEaV0u+RBGbKZQpYppnRfu9My0M28pzfaZc4=\n";
 
-    public JWTService() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey key = keyGenerator.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(key.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public JWTService() {
+//        try {
+//            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
+//            SecretKey key = keyGenerator.generateKey();
+//            secretKey = Base64.getEncoder().encodeToString(key.getEncoded());
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
@@ -43,7 +43,7 @@ public class JWTService {
                 .add(claims)
                 .subject(userName)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 30))
                 .and()
                 .signWith(getKey())
                 .compact();

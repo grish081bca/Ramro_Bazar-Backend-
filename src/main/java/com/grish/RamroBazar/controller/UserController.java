@@ -1,18 +1,23 @@
 package com.grish.RamroBazar.controller;
 
 import com.grish.RamroBazar.model.ResponseDTO;
+import com.grish.RamroBazar.model.UserDTO;
 import com.grish.RamroBazar.model.Users;
 import com.grish.RamroBazar.service.RBUserDetailService;
 import com.grish.RamroBazar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class UserController {
     @Autowired
     UserService userService;
@@ -23,13 +28,25 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseDTO getAllUsers() {
-        return userService.getUsers();
+    public  ResponseEntity<ResponseDTO> getAllUsers() {
+        try {
+            ResponseDTO responseDTO = userService.getUsers();
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            ResponseDTO errorDTO = new ResponseDTO("Error","E0000","Error while getting users", null,null);
+            return new ResponseEntity<>(errorDTO,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/add-user")
-    public ResponseDTO addUser(@RequestBody Users user) {
-        return userService.addUser(user);
+    public ResponseEntity<ResponseDTO> addUser(@RequestBody UserDTO userDTO) {
+        try {
+            ResponseDTO responseDTO = userService.addUser(userDTO);
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        } catch (Exception e) {
+            ResponseDTO errorResponse = new ResponseDTO("Error","E0000","Error adding user",null,null);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/user")
@@ -43,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/update/user")
-    public ResponseDTO updateUser(@RequestBody Users user) {
-        return userService.editUser(user);
+    public ResponseDTO updateUser(@RequestBody UserDTO userDTO) {
+        return userService.editUser(userDTO);
     }
 }

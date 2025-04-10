@@ -11,7 +11,7 @@ public class ResponseDTO {
     private Map<String,Object> details;
     private Map<String,Object> detail;
 
-    public ResponseDTO(String status, String code, String message, Map<String,Object> details) {
+    public ResponseDTO(String status, String code, String message, Map<String,Object> details, Map<String,Object> detail) {
         this.status = status;
         this.code = code;
         this.message = message;

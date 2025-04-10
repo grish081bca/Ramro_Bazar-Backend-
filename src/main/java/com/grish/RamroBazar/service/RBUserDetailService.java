@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RBUserDetailService implements UserDetailsService {
@@ -25,12 +26,12 @@ public class RBUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users users = repository.findByUserName(username);
+        Optional<Users> users = repository.findByUserName(username);
 
-        if (users == null){
+        if (users.isEmpty()){
             System.out.println("User not found");
             throw new UsernameNotFoundException("User not found");
         }
-        return new UsersPrinciple(users);
+        return new UsersPrinciple(users.get());
     }
 }
