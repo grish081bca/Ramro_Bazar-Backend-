@@ -1,5 +1,6 @@
 package com.grish.RamroBazar.service;
 
+import com.cloudinary.Cloudinary;
 import com.grish.RamroBazar.model.Product;
 import com.grish.RamroBazar.model.ProductDTO;
 import com.grish.RamroBazar.model.ResponseDTO;
@@ -20,6 +21,9 @@ public class ProductService {
     @Autowired
     ProductRepository repo;
 
+    @Autowired
+    CloudinaryService cloudinaryService;
+
     public ResponseDTO getAllProducts() {
         List<Product> products = repo.findAll();
         List<ProductDTO> productDTOs = products.stream()
@@ -30,28 +34,29 @@ public class ProductService {
         details.put("totalProducts", productDTOs.size());
         details.put("products", productDTOs);
 
-        return new ResponseDTO("M0000", "M0000", "Success", details);
+        return new ResponseDTO("M0000", "M0000", "Success", details, null);
     }
 
-    public ResponseDTO addProduct(ProductDTO prod, MultipartFile imageFile) throws IOException {
+    public ResponseDTO addProduct(ProductDTO productDTO, MultipartFile imageFile) throws IOException {
         Product product = new Product();
-        product.setName(prod.getName());
-        product.setPrice(prod.getPrice());
-        product.setDescription(prod.getDescription());
-        product.setCategory(prod.getCategory());
-        product.setQuantity(prod.getQuantity());
-        product.setAvailable(prod.getAvailable());
-        product.setReleaseDate(prod.getReleaseDate());
-        product.setBrand(prod.getBrand());
-        product.setImageName(imageFile.getOriginalFilename());
-        product.setImageType(imageFile.getContentType());
-        product.setImageDate(imageFile.getBytes());
-        prod.setProductId(repo.save(product).getProductId());
+        product.setName(productDTO.getProductName());
+        product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
+        product.setCategory(productDTO.getCategory());
+        product.setQuantity(productDTO.getQuantity());
+        product.setAvailable(productDTO.getAvailable());
+        product.setReleaseDate(productDTO.getReleaseDate());
+        product.setBrand(productDTO.getBrand());
+
+        //For Image to Upload in Cloud
+        String image = cloudinaryService.uploadImage(imageFile);
+        product.setImageUrl(image);
+        productDTO.setProductId(repo.save(product).getProductId());
 
         Map<String, Object> details = new HashMap<>();
-        details.put("products", prod);
+        details.put("products", productDTO);
 
-        return new ResponseDTO("M0000", "M0000", "Product added successfully", details);
+        return new ResponseDTO("M0000", "M0000", "Product added successfully", details, null);
     }
 
     public ResponseDTO  getProductById(Integer productId) {
@@ -61,9 +66,9 @@ public class ProductService {
             Map<String, Object> details = new HashMap<>();
             details.put("products", productDTO);
 
-            return new ResponseDTO("M0000", "M0000", "Success", details);
+            return new ResponseDTO("M0000", "M0000", "Success", details, null);
         } else {
-            return new ResponseDTO("M0001", "M0001", "Product not found", null);
+            return new ResponseDTO("M0001", "M0001", "Product not found", null, null);
         }
     }
 
@@ -75,9 +80,9 @@ public class ProductService {
             Map<String, Object> details = new HashMap<>();
             details.put("deletedProduct", ConvertUtil.convertProductDTO(product));
 
-            return new ResponseDTO("M0000", "M0000", "Product deleted successfully", details);
+            return new ResponseDTO("M0000", "M0000", "Product deleted successfully", details, null);
         } else {
-            return new ResponseDTO("M0001", "M0001", "Product not found", null);
+            return new ResponseDTO("M0001", "M0001", "Product not found", null, null);
         }
     }
 
@@ -85,7 +90,7 @@ public class ProductService {
         Product product = repo.findById(prod.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        product.setName(prod.getName());
+        product.setName(prod.getProductName());
         product.setPrice(prod.getPrice());
         product.setDescription(prod.getDescription());
         product.setCategory(prod.getCategory());
@@ -93,17 +98,20 @@ public class ProductService {
         product.setAvailable(prod.getAvailable());
         product.setReleaseDate(prod.getReleaseDate());
         product.setBrand(prod.getBrand());
-        product.setImageName(imageFile.getOriginalFilename());
-        product.setImageType(imageFile.getContentType());
-        product.setImageDate(imageFile.getBytes());
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadImage(imageFile);
+            product.setImageUrl(imageUrl);
+        }
+
         try {
             repo.save(product);
             Map<String, Object> details = new HashMap<>();
             details.put("product", ConvertUtil.convertProductDTO(product));
 
-            return new ResponseDTO("M0000", "SUCCESS", "Product updated successfully", details);
+            return new ResponseDTO("M0000", "SUCCESS", "Product updated successfully", details, null);
         } catch (Exception e) {
-            return new ResponseDTO("M0002", "ERROR", "Failed to update product", null);
+            return new ResponseDTO("M0002", "ERROR", "Failed to update product", null, null);
         }
     }
 

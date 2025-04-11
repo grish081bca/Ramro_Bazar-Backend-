@@ -37,7 +37,7 @@ public class SecurityConfig {
         http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/login", "/oauth2/**").permitAll()
+                        .requestMatchers("/api/login").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -57,22 +57,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-//    @Bean
-//    public UserDetailsService userDetailsService(){
-//        UserDetails admin = User
-//                .withDefaultPasswordEncoder()
-//                .username("admin")
-//                .password("password")
-//                .roles("ADMIN")
-//                .build();
-//
-//        UserDetails user = User
-//                .withDefaultPasswordEncoder()
-//                .username("user")
-//                .password("password")
-//                .roles("USER")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(admin, user);
-//    }
 }

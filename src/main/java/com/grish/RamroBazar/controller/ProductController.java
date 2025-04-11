@@ -6,6 +6,7 @@ import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -41,13 +44,37 @@ public class ProductController {
         return service.getAllProducts();
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')") // Only Admins can access this
+//    @PostMapping(value = "/add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseDTO addProduct(
+//            @RequestPart("productDTO") ProductDTO productDTO,  // Match form field name
+//            @RequestPart("imageFile") MultipartFile imageFile
+//    ) throws IOException {
+//        return service.addProduct(productDTO,imageFile);
+//    }
+
     @PostMapping(value = "/add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseDTO addProduct(
-            @RequestPart("productDTO") ProductDTO productDTO,  // Match form field name
+            @RequestParam("productName") String productName,
+            @RequestParam("description") String description,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("brand") String brand,
+            @RequestParam("category") String category,
+            @RequestParam("releaseDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate releaseDate,
+            @RequestParam("available") Boolean available,
+            @RequestParam("quantity") Integer quantity,
             @RequestPart("imageFile") MultipartFile imageFile
     ) throws IOException {
-        return service.addProduct(productDTO,imageFile);
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductName(productName);
+        productDTO.setDescription(description);
+        productDTO.setPrice(price);
+        productDTO.setBrand(brand);
+        productDTO.setCategory(category);
+        productDTO.setReleaseDate(releaseDate);
+        productDTO.setAvailable(available);
+        productDTO.setQuantity(quantity);
+
+        return service.addProduct(productDTO, imageFile);
     }
 
     @GetMapping("/products/{id}")
@@ -60,12 +87,6 @@ public class ProductController {
         return service.deleteProduct(id);
     }
 
-//    @PostMapping("/update/product")
-//    public ResponseEntity<ResponseDTO> editProduct(@RequestBody ProductDTO productDto) {
-//        ResponseDTO response = service.updateProduct(productDto);
-//        return ResponseEntity.ok(response);
-//    }
-
     @PostMapping(value = "/update/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> updateProduct(
             @RequestPart("productDTO") ProductDTO productDTO,
@@ -74,27 +95,5 @@ public class ProductController {
         ResponseDTO response = service.updateProduct(productDTO,imageFile);
 
         return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("product/{id}/image")
-    public ResponseEntity<byte[]> getProductImageById(@PathVariable Integer id) {
-        ResponseDTO response = service.getProductById(id);
-
-        // Check if the response indicates success
-        if (!"M0000".equals(response.getCode())) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Extract ProductDTO from the response details
-        Map<String, Object> details = (Map<String, Object>) response.getDetails();
-        ProductDTO productDTO = (ProductDTO) details.get("products");
-
-        // Extract image data from ProductDTO
-        byte[] imageData = productDTO.getImageDate();
-        String imageType = productDTO.getImageType();
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(imageType))
-                .body(imageData);
     }
 }

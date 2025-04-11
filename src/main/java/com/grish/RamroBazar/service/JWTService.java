@@ -25,16 +25,6 @@ import java.util.prefs.BackingStoreException;
 public class JWTService {
     private String secretKey = "h9RjHV4rEaV0u+RBGbKZQpYppnRfu9My0M28pzfaZc4=\n";
 
-//    public JWTService() {
-//        try {
-//            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-//            SecretKey key = keyGenerator.generateKey();
-//            secretKey = Base64.getEncoder().encodeToString(key.getEncoded());
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
 

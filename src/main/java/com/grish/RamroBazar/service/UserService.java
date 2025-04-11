@@ -125,11 +125,11 @@ public class UserService {
         }
     }
 
-    public ResponseDTO verifyUser(Users user) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
+    public ResponseDTO verifyUser(UserDTO userDTO) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getUserName(), userDTO.getPassword()));
 
         if (authentication.isAuthenticated()){
-           var getToken = jwtService.generateToken(user.getUserName());
+           var getToken = jwtService.generateToken(userDTO.getUserName());
             Map<String,Object> detail = new HashMap<>();
             detail.put("token", getToken);
             return  new ResponseDTO("M0000", "M0000", "Login SuccessFully", detail, null) ;

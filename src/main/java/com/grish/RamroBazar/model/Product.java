@@ -24,10 +24,5 @@ public class Product {
     private LocalDate releaseDate;
     private Boolean available;
     private Integer quantity;
-
-    private String imageType;
-    private String imageName;
-
-    @Lob
-    private byte[] imageDate;
+    private String imageUrl;
 }

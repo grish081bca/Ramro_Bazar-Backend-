@@ -17,14 +17,13 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-//@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class UserController {
     @Autowired
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseDTO login(@RequestBody Users user) {
-        return userService.verifyUser(user);
+    public ResponseDTO login(@RequestBody UserDTO userDTO) {
+        return userService.verifyUser(userDTO);
     }
 
     @GetMapping("/users")

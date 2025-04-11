@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductDTO {
 
     private Integer productId;
@@ -18,7 +20,5 @@ public class ProductDTO {
     private LocalDate releaseDate;
     private Boolean available;
     private Integer quantity;
-    private String imageType;
-    private String imageName;
-    private byte[] imageDate;
+    private String imageUrl;
 }
