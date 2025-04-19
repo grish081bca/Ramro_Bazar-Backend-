@@ -4,7 +4,7 @@ import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.model.UserDTO;
 import com.grish.RamroBazar.model.Users;
 import com.grish.RamroBazar.service.RBUserDetailService;
-import com.grish.RamroBazar.service.UserService;
+import com.grish.RamroBazar.service.impl.IUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,20 +16,26 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserController {
+
     @Autowired
-    UserService userService;
+    IUser iUser;
 
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody UserDTO userDTO) {
-        return userService.verifyUser(userDTO);
+        try {
+            return iUser.verifyUser(userDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseDTO("error","M0000","something went wrong", null,null);
+        }
     }
 
-    @GetMapping("/users")
+    @GetMapping("/list")
     public  ResponseEntity<ResponseDTO> getAllUsers() {
         try {
-            ResponseDTO responseDTO = userService.getUsers();
+            ResponseDTO responseDTO = iUser.getUsers();
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch (Exception e) {
             ResponseDTO errorDTO = new ResponseDTO("Error","E0000","Error while getting users", null,null);
@@ -37,10 +43,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/add-user")
+    @PostMapping("/add")
     public ResponseEntity<ResponseDTO> addUser(@RequestBody UserDTO userDTO) {
         try {
-            ResponseDTO responseDTO = userService.addUser(userDTO);
+            ResponseDTO responseDTO = iUser.addUser(userDTO);
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             ResponseDTO errorResponse = new ResponseDTO("Error","E0000","Error adding user",null,null);
@@ -48,18 +54,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user")
-    public  ResponseDTO getUserByID(@RequestParam Integer id){
-        return userService.getUserById(id);
+    @GetMapping("/{id}")
+    public  ResponseDTO getUserByID(@PathVariable Integer id){
+        return iUser.getUserById(id);
     }
 
-    @PostMapping("/delete/user")
-    public ResponseDTO deleteUser(@RequestParam Integer id) {
-        return userService.deleteUser(id);
+    @PostMapping("/delete/{id}")
+    public ResponseDTO deleteUser(@PathVariable Integer id) {
+        return iUser.deleteUser(id);
     }
 
-    @PostMapping("/update/user")
+    @PostMapping("/update")
     public ResponseDTO updateUser(@RequestBody UserDTO userDTO) {
-        return userService.editUser(userDTO);
+        return iUser.editUser(userDTO);
     }
 }

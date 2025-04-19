@@ -4,7 +4,9 @@ import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.model.UserDTO;
 import com.grish.RamroBazar.model.Users;
 import com.grish.RamroBazar.repository.UserRepository;
+import com.grish.RamroBazar.service.impl.IUser;
 import com.grish.RamroBazar.utils.ConvertUtil;
+import jakarta.persistence.Version;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements IUser {
     @Autowired
     private UserRepository repository;
 
@@ -33,6 +35,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
     public ResponseDTO getUsers() {
         try {
             List<Users> users = repository.findAll();
@@ -48,6 +51,7 @@ public class UserService {
         }
     }
 
+    @Override
     public ResponseDTO addUser(UserDTO userDTO) {
         Optional<Users> existUserByName = repository.findByUserName(userDTO.getUserName());
         Optional<Users> existUserByEmail = repository.findByEmail(userDTO.getUserEmail());
@@ -78,6 +82,7 @@ public class UserService {
         }
     }
 
+    @Override
     public ResponseDTO getUserById(Integer userId){
         Users user = repository.findById(userId).orElse(null);
         if (user != null) {
@@ -91,6 +96,7 @@ public class UserService {
         }
     }
 
+    @Override
     public ResponseDTO deleteUser(Integer userId){
         Users users = repository.findById(userId).orElse(null);
         if (users != null){
@@ -106,6 +112,7 @@ public class UserService {
         }
     }
 
+    @Override
     public ResponseDTO editUser(UserDTO userDTO){
         Users users = repository.findById(userDTO.getUserId()).orElse(null);
         if (users != null){
@@ -125,6 +132,7 @@ public class UserService {
         }
     }
 
+    @Override
     public ResponseDTO verifyUser(UserDTO userDTO) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getUserName(), userDTO.getPassword()));
 

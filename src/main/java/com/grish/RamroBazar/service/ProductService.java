@@ -5,6 +5,7 @@ import com.grish.RamroBazar.model.Product;
 import com.grish.RamroBazar.model.ProductDTO;
 import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.repository.ProductRepository;
+import com.grish.RamroBazar.service.impl.IProduct;
 import com.grish.RamroBazar.utils.ConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductService {
+public class ProductService implements IProduct {
     @Autowired
     ProductRepository repo;
 
     @Autowired
     CloudinaryService cloudinaryService;
 
+    @Override
     public ResponseDTO getAllProducts() {
         List<Product> products = repo.findAll();
         List<ProductDTO> productDTOs = products.stream()
@@ -37,6 +39,7 @@ public class ProductService {
         return new ResponseDTO("M0000", "M0000", "Success", details, null);
     }
 
+    @Override
     public ResponseDTO addProduct(ProductDTO productDTO, MultipartFile imageFile) throws IOException {
         Product product = new Product();
         product.setName(productDTO.getProductName());
@@ -59,6 +62,7 @@ public class ProductService {
         return new ResponseDTO("M0000", "M0000", "Product added successfully", details, null);
     }
 
+    @Override
     public ResponseDTO  getProductById(Integer productId) {
         Product product = repo.findById(productId).orElse(null);
         if (product != null) {
@@ -72,6 +76,7 @@ public class ProductService {
         }
     }
 
+    @Override
     public ResponseDTO deleteProduct(Integer prodId) {
         Product product = repo.findById(prodId).orElse(null);
         if (product != null) {
@@ -86,6 +91,7 @@ public class ProductService {
         }
     }
 
+    @Override
     public ResponseDTO updateProduct(ProductDTO prod , MultipartFile imageFile) throws IOException {
         Product product = repo.findById(prod.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -115,7 +121,4 @@ public class ProductService {
         }
     }
 
-    public Product findProductById(Integer id) {
-        return repo.findById(id).orElse(null);
-    }
 }

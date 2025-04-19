@@ -4,6 +4,7 @@ import com.grish.RamroBazar.model.Product;
 import com.grish.RamroBazar.model.ProductDTO;
 import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.service.ProductService;
+import com.grish.RamroBazar.service.impl.IProduct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,13 +22,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-
 @RestController
-@CrossOrigin
-@RequestMapping("/api")
+@RequestMapping("/api/product")
 public class ProductController {
+//    @Autowired
+//    ProductService productService;
+
     @Autowired
-    ProductService service;
+    IProduct product;
 
     @GetMapping("/")
     public String greet(HttpServletRequest request) {
@@ -39,20 +41,12 @@ public class ProductController {
         return (CsrfToken) request.getAttribute("_csrf");
     }
 
-    @GetMapping("/products")
+    @GetMapping("/list")
     public ResponseDTO getAllProducts() {
-        return service.getAllProducts();
+        return product.getAllProducts();
     }
 
-//    @PostMapping(value = "/add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseDTO addProduct(
-//            @RequestPart("productDTO") ProductDTO productDTO,  // Match form field name
-//            @RequestPart("imageFile") MultipartFile imageFile
-//    ) throws IOException {
-//        return service.addProduct(productDTO,imageFile);
-//    }
-
-    @PostMapping(value = "/add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseDTO addProduct(
             @RequestParam("productName") String productName,
             @RequestParam("description") String description,
@@ -74,26 +68,45 @@ public class ProductController {
         productDTO.setAvailable(available);
         productDTO.setQuantity(quantity);
 
-        return service.addProduct(productDTO, imageFile);
+        return product.addProduct(productDTO, imageFile);
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ResponseDTO getProductById(@PathVariable Integer id) {
-        return service.getProductById(id);
+        return product.getProductById(id);
     }
 
-    @PostMapping("/delete/products/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseDTO deleteProduct(@PathVariable Integer id) {
-        return service.deleteProduct(id);
+        return product.deleteProduct(id);
     }
 
-    @PostMapping(value = "/update/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> updateProduct(
-            @RequestPart("productDTO") ProductDTO productDTO,
-            @RequestPart("imageFile") MultipartFile imageFile) throws IOException {
+            @RequestParam("productId") Integer productId,
+            @RequestParam("productName") String productName,
+            @RequestParam("description") String description,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("brand") String brand,
+            @RequestParam("category") String category,
+            @RequestParam("releaseDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate releaseDate,
+            @RequestParam("available") Boolean available,
+            @RequestParam("quantity") Integer quantity,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile
+    ) throws IOException {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId(productId);
+        productDTO.setProductName(productName);
+        productDTO.setDescription(description);
+        productDTO.setPrice(price);
+        productDTO.setBrand(brand);
+        productDTO.setCategory(category);
+        productDTO.setReleaseDate(releaseDate);
+        productDTO.setAvailable(available);
+        productDTO.setQuantity(quantity);
 
-        ResponseDTO response = service.updateProduct(productDTO,imageFile);
-
+        ResponseDTO response = product.updateProduct(productDTO, imageFile);
         return ResponseEntity.ok(response);
     }
+
 }
