@@ -58,11 +58,11 @@ public class UserService implements IUser {
         Optional<Users> existUserByPhone = repository.findByPhone(userDTO.getUserPhone());
         try{
             if (existUserByName.isPresent()) {
-                return new ResponseDTO("Error","E0000","User already exists", null,null);
+                return new ResponseDTO("Error","E0000","Username already exists", null,null);
             } else if (existUserByEmail.isPresent()) {
-                return new ResponseDTO("Error","E0000","User already exists", null,null);
+                return new ResponseDTO("Error","E0000","Email already exists", null,null);
             }else if (existUserByPhone.isPresent()) {
-                return new ResponseDTO("Error","E0000","User already exists", null,null);
+                return new ResponseDTO("Error","E0000","Phone Number already exists", null,null);
             }else {
                 Users users = new Users();
                 users.setUserName(userDTO.getUserName());
@@ -116,6 +116,18 @@ public class UserService implements IUser {
     public ResponseDTO editUser(UserDTO userDTO){
         Users users = repository.findById(userDTO.getUserId()).orElse(null);
         if (users != null){
+            Optional<Users> existUserByName = repository.findByUserName(userDTO.getUserName());
+            Optional<Users> existUserByEmail = repository.findByEmail(userDTO.getUserEmail());
+            Optional<Users> existUserByPhone = repository.findByPhone(userDTO.getUserPhone());
+
+            if (existUserByName.isPresent()) {
+                return new ResponseDTO("Error","E0000","Username already exists", null,null);
+            } else if (existUserByEmail.isPresent()) {
+                return new ResponseDTO("Error","E0000","Email already exists", null,null);
+            } else if (existUserByPhone.isPresent()) {
+                return new ResponseDTO("Error","E0000","Phone Number already exists", null,null);
+            }
+
             users.setUserName(userDTO.getUserName());
             users.setRole(userDTO.getRole());
             users.setEmail(userDTO.getUserEmail());
@@ -137,10 +149,18 @@ public class UserService implements IUser {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getUserName(), userDTO.getPassword()));
 
         if (authentication.isAuthenticated()){
-           var getToken = jwtService.generateToken(userDTO.getUserName());
-            Map<String,Object> detail = new HashMap<>();
-            detail.put("token", getToken);
-            return  new ResponseDTO("M0000", "M0000", "Login SuccessFully", detail, null) ;
+            Optional<Users> users = repository.findByUserName(userDTO.getUserName());
+            if (users.isPresent()) {
+                Users user = users.get();
+                var getToken = jwtService.generateToken(userDTO.getUserName());
+                Map<String, Object> detail = new HashMap<>();
+                detail.put("token", getToken);
+                detail.put("userName", user.getUserName());
+                detail.put("role", user.getRole());
+                detail.put("userId", user.getUserId());
+                return new ResponseDTO("M0000", "M0000", "Login SuccessFully", detail, null);
+            }
+            return new ResponseDTO("M0000", "M0000", "User not found", null, null);
         }else {
             Map<String,Object> message = new HashMap<>();
             message.put("error", "Login Failed");

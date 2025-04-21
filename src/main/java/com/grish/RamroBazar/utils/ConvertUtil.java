@@ -1,9 +1,6 @@
     package com.grish.RamroBazar.utils;
 
-    import com.grish.RamroBazar.model.Product;
-    import com.grish.RamroBazar.model.ProductDTO;
-    import com.grish.RamroBazar.model.UserDTO;
-    import com.grish.RamroBazar.model.Users;
+    import com.grish.RamroBazar.model.*;
     import lombok.experimental.UtilityClass;
 
     import java.util.List;
@@ -44,5 +41,29 @@
 
         public static List<UserDTO> convertUserListDTO(List<Users> users) {
             return users.stream().map(ConvertUtil::convertUserDTO).collect(Collectors.toList());
+        }
+
+        public static CartItemDTO convertToCartItemDTO(CartItem cartItem) {
+            CartItemDTO dto = new CartItemDTO();
+            dto.setCartItemId(cartItem.getCartItemId());
+            dto.setProductId(cartItem.getProduct().getProductId());
+            dto.setProductName(cartItem.getProduct().getName());
+            dto.setImageUrl(cartItem.getProduct().getImageUrl());
+            dto.setPrice(cartItem.getProduct().getPrice());
+            dto.setQuantity(cartItem.getQuantity());
+            return dto;
+        }
+
+        public static CartDTO convertToCartDTO(Cart cart) {
+            CartDTO cartDTO = new CartDTO();
+            cartDTO.setCartId(cart.getCartId());
+            cartDTO.setUserId(cart.getUser().getUserId());
+            cartDTO.setTotalPrice(cart.getTotalPrice());
+
+            cartDTO.setItems(cart.getCartItems().stream()
+                    .map(ConvertUtil ::convertToCartItemDTO)
+                    .collect(Collectors.toList()));
+
+            return cartDTO;
         }
     }
