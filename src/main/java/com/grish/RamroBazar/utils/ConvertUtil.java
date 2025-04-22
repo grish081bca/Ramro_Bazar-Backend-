@@ -1,5 +1,6 @@
     package com.grish.RamroBazar.utils;
 
+    import com.grish.RamroBazar.enums.RoleTypes;
     import com.grish.RamroBazar.model.*;
     import lombok.experimental.UtilityClass;
 
@@ -33,7 +34,7 @@
             userDTO.setUserId(users.getUserId());
             userDTO.setUserName(users.getUserName());
             userDTO.setPassword(users.getPassword());
-            userDTO.setRole(users.getRole());
+            userDTO.setRole(users.getRole().name());
             userDTO.setUserEmail(users.getEmail());
             userDTO.setUserPhone(users.getPhone());
             return userDTO;

@@ -1,5 +1,6 @@
 package com.grish.RamroBazar.service;
 
+import com.grish.RamroBazar.enums.RoleTypes;
 import com.grish.RamroBazar.model.ResponseDTO;
 import com.grish.RamroBazar.model.UserDTO;
 import com.grish.RamroBazar.model.Users;
@@ -67,7 +68,7 @@ public class UserService implements IUser {
                 Users users = new Users();
                 users.setUserName(userDTO.getUserName());
                 users.setPassword(encoder.encode(userDTO.getPassword()));
-                users.setRole(userDTO.getRole());
+                users.setRole(RoleTypes.valueOf(userDTO.getRole().toUpperCase()));
                 users.setEmail(userDTO.getUserEmail());
                 users.setPhone(userDTO.getUserPhone());
                 repository.save(users);
@@ -129,7 +130,7 @@ public class UserService implements IUser {
             }
 
             users.setUserName(userDTO.getUserName());
-            users.setRole(userDTO.getRole());
+            users.setRole(RoleTypes.valueOf(userDTO.getRole().toUpperCase()));
             users.setEmail(userDTO.getUserEmail());
             users.setPhone(userDTO.getUserPhone());
             repository.save(users);

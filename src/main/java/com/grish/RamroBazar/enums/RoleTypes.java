@@ -1,9 +1,9 @@
 package com.grish.RamroBazar.enums;
 
 public enum RoleTypes {
-    Admin("admin","has access every user"),
-    User("user","buyers"),
-    Seller("seller","product seller");
+    ADMIN("Admin","has access every user"),
+    USER("User","buyers"),
+    SELLER("Seller","product seller");
 
     private final String code;
     private final String description;

@@ -1,9 +1,7 @@
 package com.grish.RamroBazar.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.grish.RamroBazar.enums.RoleTypes;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +14,9 @@ public class Users {
     private Integer userId;
     private String userName;
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private RoleTypes role;
     private String email;
     private String phone;
 }

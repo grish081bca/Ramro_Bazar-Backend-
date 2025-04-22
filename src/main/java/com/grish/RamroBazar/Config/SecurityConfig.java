@@ -41,6 +41,9 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/user/login").permitAll()
+//                        .requestMatchers("/api/dashboard/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/api/dashboard/user/**").hasRole("USER")
+//                        .requestMatchers("/api/dashboard/seller/**").hasRole("SELLER")
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
