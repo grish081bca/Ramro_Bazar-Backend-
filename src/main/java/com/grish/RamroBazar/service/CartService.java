@@ -58,7 +58,7 @@ public class CartService implements ICart{
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        Optional<CartItem> existingItem = cartItemRepository.findByCartIdAndProductId(cart.getCartId(), productId);
+        Optional<CartItem> existingItem = cartItemRepository.findByCart_CartIdAndProduct_ProductId(cart.getCartId(), productId);
 
         if (existingItem.isPresent()) {
             CartItem item = existingItem.get();
